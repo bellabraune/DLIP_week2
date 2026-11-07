@@ -1,0 +1,74 @@
+name: Grade assignment
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  grade:
+    name: Grade tasks.py
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install grading dependencies
+        run: python -m pip install numpy pandas scipy scikit-learn pytest
+
+      - name: Grade Task 1
+        id: task1
+        run: python -m pytest -q tests/grade_task1.py
+        continue-on-error: true
+
+      - name: Grade Task 2
+        id: task2
+        run: python -m pytest -q tests/grade_task2.py
+        continue-on-error: true
+
+      - name: Grade Task 3
+        id: task3
+        run: python -m pytest -q tests/grade_task3.py
+        continue-on-error: true
+
+      - name: Report grading results
+        if: always()
+        env:
+          TASK1_OUTCOME: ${{ steps.task1.outcome }}
+          TASK2_OUTCOME: ${{ steps.task2.outcome }}
+          TASK3_OUTCOME: ${{ steps.task3.outcome }}
+        run: |
+          {
+            echo "## Assignment grading"
+            echo
+            echo "| Task | Result |"
+            echo "| --- | --- |"
+            if [ "$TASK1_OUTCOME" = "success" ]; then
+              echo "| Task 1 | ✅ Passed |"
+            else
+              echo "| Task 1 | ❌ Failed |"
+            fi
+            if [ "$TASK2_OUTCOME" = "success" ]; then
+              echo "| Task 2 | ✅ Passed |"
+            else
+              echo "| Task 2 | ❌ Failed |"
+            fi
+            if [ "$TASK3_OUTCOME" = "success" ]; then
+              echo "| Task 3 | ✅ Passed |"
+            else
+              echo "| Task 3 | ❌ Failed |"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$TASK1_OUTCOME" != "success" ] ||
+             [ "$TASK2_OUTCOME" != "success" ] ||
+             [ "$TASK3_OUTCOME" != "success" ]; then
+            exit 1
+          fi
