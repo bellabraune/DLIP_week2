@@ -17,8 +17,24 @@ from sklearn import datasets
 
 # Copy and paste the code for that function here:
 # -----------------------------------------------
-def my_mlp():
-    pass  # replace with implementation
+ddef my_mlp(w, X, sigma=np.tanh):
+    """
+    This function takes a vector of weights, an m x n matrix containing the input features of each
+    observation, and an activation function with tanh() as default function. The function first
+    creates three weight matrice by extracting the values from the input vector w, performs a series
+    of matrix multiplication and returns the value of the function that the network implements. 
+    """
+    # create the weight matrices
+    W1 = np.array(w[0:4*6]).reshape(4,6)
+    W2 = np.array(w[4*6: 4*6 + 7*4]).reshape(7,4)
+    W3 = np.array(w[4*6 + 7*4: ]).reshape(1, 7)
+
+    # perform matrix multiplication to compute activations and output 
+    a1 = sigma(W1 @ X)
+    a2 = sigma(W2 @ a1)
+    f = sigma(W3 @ a2)
+    
+    return f 
 
 # -----------------------------------------------
 
