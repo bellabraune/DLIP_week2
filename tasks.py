@@ -17,7 +17,7 @@ from sklearn import datasets
 
 # Copy and paste the code for that function here:
 # -----------------------------------------------
-ddef my_mlp(w, X, sigma=np.tanh):
+def my_mlp(w, X, sigma=np.tanh):
     """
     This function takes a vector of weights, an m x n matrix containing the input features of each
     observation, and an activation function with tanh() as default function. The function first
@@ -48,8 +48,17 @@ ddef my_mlp(w, X, sigma=np.tanh):
 
 # Copy and paste the code for that function here:
 # -----------------------------------------------
-def MSE_func():
-    pass  # replace with implementation
+def MSE_func(w, X, y, sigma=np.tanh): 
+    """
+    This function takes a vector of weights, a Matrix of input features for each observation 
+    and a vector of true values. Employing the function my_mlp(), the function computes the
+    predicted values for the given weights and feature values, computes the sum of squared
+    errors (MSE) and returns its value. 
+    """
+    f = my_mlp(w, X, sigma=sigma)
+    MSE = np.sum((f - y)**2)
+    
+    return MSE
 
 # -----------------------------------------------
 
@@ -65,7 +74,14 @@ def MSE_func():
 
 # Copy and paste the code for that function here:
 # -----------------------------------------------
-def dR():
-    pass  # replace with implementation
-
+def dR(beta, x, y):
+    """
+    This function takes a vector containing the intercept and the slope and values for the input and
+    correct output. With these component, the function computes the partial derivatives and returns
+    the gradient vector.
+    """
+    dbeta_0 = 2*np.mean(beta[0] + beta[1]*x - y) # implement formula for dR/dβ₀
+    dbeta_1 = 2*np.mean((beta[0] + beta[1]*x - y)*x) # implement formula for dR/dβ₁
+    
+    return np.array([dbeta_0, dbeta_1])
 # -----------------------------------------------
